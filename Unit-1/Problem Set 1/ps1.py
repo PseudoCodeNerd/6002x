@@ -2,11 +2,12 @@
 # 6.00.2x Problem Set 1: Space Cows 
 
 from ps1_partition import get_partitions
-import operator
+import time
 
 #================================
 # Part A: Transporting Space Cows
 #================================
+
 
 def load_cows(filename):
     """
@@ -31,7 +32,6 @@ def load_cows(filename):
     return cow_dict
 
 
-# Problem 1
 # Enter your code for the Greedy Cow Transport here
 # Problem 1
 def greedy_cow_transport(cows, limit=10):
@@ -57,6 +57,9 @@ def greedy_cow_transport(cows, limit=10):
     trips
     """
     # TODO: Your code here
+    # making a list of lists of cows and weights in descending order of weight using insertion sort
+    # cow list : [['MooMoo', 85], ['Milkshake', 75], ['Muscles', 65], ['Patches', 60], ['Horns', 50], ['Louis', 45],
+    # ['Polaris', 20], ['Miss Bella', 15], ['Lotus', 10], ['Clover', 5]]
     cow_list = [[k, v] for k, v in cows.items()]
     for i in range(len(cow_list)):
         temp = cow_list[i]
@@ -65,27 +68,31 @@ def greedy_cow_transport(cows, limit=10):
             cow_list[j + 1] = cow_list[j]
             j -= 1
         cow_list[j + 1] = temp
-    trips, total_weight = 0, 0
-    trip_list = []
-    trip_num = 0
-    while len(cow_list) > 0:
-        trip_list.append([])
-        i = 0
-        trip_weight = 0
-        while i < len(cow_list):
-            if trip_weight + cow_list[i][1] <= limit:
-                trip_list[trip_num].append(cow_list[i][0])
-                total_weight += cow_list[i][1]
-                trip_weight += cow_list[i][1]
-                trips += len(trip_list)
-                del (cow_list[i])
-            else:
-                i += 1
-        trip_num += 1
-    return (trip_list, total_weight)
+    trips = []
+    while True:
+        curr_trip, total_weight = [], 0
+        for i in cow_list:
+            if total_weight + i[1] <= limit:
+                # cow list has elements as [['MooMoo', 85], [cow_name, cow_weight], ...]
+                curr_trip.append(i[0])
+                # curr_trip contains eligible cow names in a list.
+                total_weight += i[1]
+        trips.append(curr_trip)  # trips now looks something like this : [ [cow_name, cow_name] ]
+        temp = []
+        for i in cow_list:
+            if i[0] not in curr_trip:
+                temp.append(i)
+        cow_list = temp
+        if not cow_list:
+            break
+    return trips
+
+# correct! 20/20
 
 # Problem 2
-def brute_force_cow_transport(cows,limit=10):
+
+
+def brute_force_cow_transport(cows, limit=10):
     """
     Finds the allocation of cows that minimizes the number of spaceship trips
     via brute force.  The brute force algorithm should follow the following method:
@@ -93,23 +100,53 @@ def brute_force_cow_transport(cows,limit=10):
     1. Enumerate all possible ways that the cows can be divided into separate trips
     2. Select the allocation that minimizes the number of trips without making any trip
         that does not obey the weight limitation
-            
+
     Does not mutate the given dictionary of cows.
 
     Parameters:
     cows - a dictionary of name (string), weight (int) pairs
     limit - weight limit of the spaceship (an int)
-    
+
     Returns:
     A list of lists, with each inner list containing the names of cows
     transported on a particular trip and the overall list containing all the
     trips
     """
     # TODO: Your code here
-    pass
 
+    '''
+    Idea 1
+    use get_partitions to generate all possible combinations, then filter out combinations
+    where weight of cows exceeds the limit (+ where all cows are present), then return list
+    of minimum length.
+    Simple, inefficient.
+
+    Idea 2 
+    use dfs to iterate through all nodes and find one with minimum trips, remove same with set
+    Complex(?), highly efficient
+    '''
+    # Idea 1
+    possible_combinations = []
+    for partition in get_partitions(cows.keys()):
+        possible_combinations.append(partition)
+    possible_combinations.sort(key=len)
+
+    valid_combinations = possible_combinations.copy()
+
+    for partition in possible_combinations:
+        for trip in partition:
+            total = sum([cows.get(cow) for cow in trip])
+            if total > limit:
+                valid_combinations.remove(partition)
+                break
+
+    return min(valid_combinations, key=len)
+
+    # correct 20/20
         
 # Problem 3
+
+
 def compare_cow_transport_algorithms():
     """
     Using the data from ps1_cow_data.txt and the specified weight limit, run your
@@ -134,10 +171,38 @@ lines to print the result of your problem.
 """
 
 cows = load_cows("ps1_cow_data.txt")
-limit=100
-print(cows)
+limit = 10
+# print(cows)
 
-# print(greedy_cow_transport(cows, limit))
-# print(brute_force_cow_transport(cows, limit))
+# start = time.time()
+print(greedy_cow_transport(cows, limit))  # 2.47955322265625e-05 s
+# end = time.time()
+# print(end - start)
 
+# start = time.time()
+print(brute_force_cow_transport(cows, limit))  # 2.752690315246582s (oof so inefficient, perhaps dp should be used)
+# end = time.time()
+# print(end - start)
 
+'''
+1. Now that you have run your benchmarks, which algorithm runs faster?
+
+[x] The Greedy Transport Algorithm
+    The Brute Force Transport Algorithm
+    They take the same amount of time
+    
+2. Consider the properties of the GREEDY algorithm. Will it return the optimal solution?
+
+    Yes, all the time
+    No, never
+[x] It could, but it depends on the data, not always.
+
+3. Consider the properties of the BRUTE FORCE algorithm. Will it return the optimal solution?
+
+[x] Yes, all the time
+    No, never
+    It could, but it depends on the data, not always.
+'''
+
+# 26/26
+# Fin. PSET1

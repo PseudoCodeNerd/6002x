@@ -1,5 +1,7 @@
 # Enter your code for the Greedy Cow Transport here
 # Problem 1
+
+
 def greedy_cow_transport(cows, limit=10):
     """
     Uses a greedy heuristic to determine an allocation of cows that attempts to
