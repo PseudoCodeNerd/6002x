@@ -2,7 +2,7 @@
 # 6.00.2x Problem Set 1: Space Cows 
 
 from ps1_partition import get_partitions
-import time
+import operator
 
 #================================
 # Part A: Transporting Space Cows
@@ -32,7 +32,9 @@ def load_cows(filename):
 
 
 # Problem 1
-def greedy_cow_transport(cows,limit=10):
+# Enter your code for the Greedy Cow Transport here
+# Problem 1
+def greedy_cow_transport(cows, limit=10):
     """
     Uses a greedy heuristic to determine an allocation of cows that attempts to
     minimize the number of spaceship trips needed to transport all the cows. The
@@ -48,15 +50,39 @@ def greedy_cow_transport(cows,limit=10):
     Parameters:
     cows - a dictionary of name (string), weight (int) pairs
     limit - weight limit of the spaceship (an int)
-    
+
     Returns:
     A list of lists, with each inner list containing the names of cows
     transported on a particular trip and the overall list containing all the
     trips
     """
     # TODO: Your code here
-    pass
-
+    cow_list = [[k, v] for k, v in cows.items()]
+    for i in range(len(cow_list)):
+        temp = cow_list[i]
+        j = i - 1
+        while j >= 0 and temp[1] > cow_list[j][1]:
+            cow_list[j + 1] = cow_list[j]
+            j -= 1
+        cow_list[j + 1] = temp
+    trips, total_weight = 0, 0
+    trip_list = []
+    trip_num = 0
+    while len(cow_list) > 0:
+        trip_list.append([])
+        i = 0
+        trip_weight = 0
+        while i < len(cow_list):
+            if trip_weight + cow_list[i][1] <= limit:
+                trip_list[trip_num].append(cow_list[i][0])
+                total_weight += cow_list[i][1]
+                trip_weight += cow_list[i][1]
+                trips += len(trip_list)
+                del (cow_list[i])
+            else:
+                i += 1
+        trip_num += 1
+    return (trip_list, total_weight)
 
 # Problem 2
 def brute_force_cow_transport(cows,limit=10):
@@ -111,7 +137,7 @@ cows = load_cows("ps1_cow_data.txt")
 limit=100
 print(cows)
 
-print(greedy_cow_transport(cows, limit))
-print(brute_force_cow_transport(cows, limit))
+# print(greedy_cow_transport(cows, limit))
+# print(brute_force_cow_transport(cows, limit))
 
 
