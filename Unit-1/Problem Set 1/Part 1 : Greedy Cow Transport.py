@@ -24,7 +24,7 @@ def greedy_cow_transport(cows, limit=10):
     transported on a particular trip and the overall list containing all the
     trips
     """
-    # TODO: Your code here
+
     # making a list of lists of cows and weights in descending order of weight using insertion sort
     # cow list : [['MooMoo', 85], ['Milkshake', 75], ['Muscles', 65], ['Patches', 60], ['Horns', 50], ['Louis', 45],
     # ['Polaris', 20], ['Miss Bella', 15], ['Lotus', 10], ['Clover', 5]]
