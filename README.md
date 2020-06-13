@@ -12,5 +12,7 @@ Introduction to Computation and Programming Using Python, Second Edition (With A
 #### Computational Thinking using Python XSeries
 1. Introduction to Computer Science and Programming Using Python 
     - Jun 5, 2019 - Aug 7, 2019 | Grade : 93% | [Certificate](https://courses.edx.org/certificates/a58a0b7523f84a9dbea0e1830a80116d)
-2. Introduction to Computational Thinking and Data Science
+2. Introduction to Computational Thinking and Data Science | Grade : 89% | [Certificate](https://courses.edx.org/certificates/a58a0b7523f84a9dbea0e1830a80116d)
     - Enrolled: Mar 25, 2020 - May 28, 2020 
+    
+[Program Certificate](https://credentials.edx.org/credentials/095c5e1b21f5473b8ee070578038ee01/)
